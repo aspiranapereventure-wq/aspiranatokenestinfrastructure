@@ -240,5 +240,4 @@
 @media (max-width: 768px) {
   /* hide heavy 3D on mobile for perf */
   .hide-on-mobile { display: none; }
-  }
 }
