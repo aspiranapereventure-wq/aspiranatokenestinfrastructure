@@ -72,14 +72,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "Aspirana Tokenest Infrastructure" },
+      { name: "description", content: "“Institutional Infrastructure for the Next Generation of Global Asset Markets.”" },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "Aspirana Tokenest Infrastructure" },
+      { property: "og:description", content: "“Institutional Infrastructure for the Next Generation of Global Asset Markets.”" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Aspirana Tokenest Infrastructure" },
+      { name: "twitter:description", content: "“Institutional Infrastructure for the Next Generation of Global Asset Markets.”" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/RltLeOxlGLRb4qD9SBj82ZSczpi1/social-images/social-1779440157034-447249.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/RltLeOxlGLRb4qD9SBj82ZSczpi1/social-images/social-1779440157034-447249.webp" },
     ],
     links: [
       {
