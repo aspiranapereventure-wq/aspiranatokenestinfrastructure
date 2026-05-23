@@ -1,4 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/sections/Navbar";
 import CapitalTicker from "@/components/sections/CapitalTicker";
 import Hero from "@/components/sections/Hero";
@@ -28,6 +30,38 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const navigate = useNavigate();
+  const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    supabase.auth.getSession().then(({ data }) => {
+      if (!mounted) return;
+      if (!data.session) {
+        navigate({ to: "/auth", replace: true });
+      } else {
+        setChecked(true);
+      }
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
+      if (!session) navigate({ to: "/auth", replace: true });
+    });
+    return () => { mounted = false; subscription.unsubscribe(); };
+  }, [navigate]);
+
+  if (!checked) {
+    return (
+      <main className="flex min-h-screen items-center justify-center" style={{ background: "#07111F" }}>
+        <div className="flex items-center gap-3 text-[var(--text-muted)]">
+          <span className="h-2 w-2 rounded-full bg-[var(--gold)] animate-pulse-dot" />
+          <span className="font-mono-tab text-[11px] uppercase tracking-[0.22em]">
+            Verifying institutional access…
+          </span>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="relative min-h-screen" style={{ background: "#07111F" }}>
       <Navbar />
