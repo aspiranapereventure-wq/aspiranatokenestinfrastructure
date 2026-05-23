@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { Building2, Linkedin, Github } from "lucide-react";
+import { Building2, Linkedin, Github, LogOut } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const NAV = ["Infrastructure", "Assets", "Liquidity", "Compliance", "Intelligence"];
 
@@ -100,6 +101,15 @@ export default function Navbar() {
               SYSTEM&nbsp;<span style={{ color: "var(--status-green)" }}>OPERATIONAL</span>
             </span>
           </div>
+          <button
+            type="button"
+            onClick={() => supabase.auth.signOut()}
+            title="Sign out"
+            className="flex h-8 w-8 items-center justify-center rounded-md transition-colors hover:bg-white/5"
+            style={{ color: "var(--text-muted)" }}
+          >
+            <LogOut className="h-4 w-4" />
+          </button>
         </div>
       </div>
     </motion.nav>
