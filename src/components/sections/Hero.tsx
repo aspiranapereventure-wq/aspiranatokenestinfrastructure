@@ -22,8 +22,8 @@ export default function Hero() {
           "radial-gradient(circle at 80% 20%, rgba(212,175,55,0.16) 0%, transparent 55%), radial-gradient(circle at 10% 80%, rgba(59,130,246,0.08) 0%, transparent 50%), #07111F",
       }}
     >
-      {/* grid */}
-      <div className="absolute inset-0 institutional-grid opacity-50" />
+      {/* live moving grid */}
+      <div className="absolute inset-0 institutional-grid-live opacity-60" />
       {/* glows */}
       <div className="absolute right-0 top-0 h-[28rem] w-[28rem] rounded-full blur-3xl animate-pulse-glow" style={{ background: "rgba(212,175,55,0.18)" }} />
       <div className="absolute bottom-10 left-0 h-80 w-80 rounded-full blur-3xl animate-pulse-glow" style={{ background: "rgba(59,130,246,0.08)", animationDelay: "2s" }} />
@@ -46,21 +46,21 @@ export default function Hero() {
           <motion.h1
             variants={fadeUp}
             transition={{ duration: 0.9 }}
-            className="text-[2.6rem] font-bold leading-[1.05] tracking-tight sm:text-5xl lg:text-[3.6rem]"
+            className="font-display text-[2.9rem] font-medium leading-[1.02] tracking-[-0.02em] sm:text-6xl lg:text-[4.2rem]"
             style={{ color: "var(--text)" }}
           >
             The Sovereign Infrastructure Layer
             <br />
-            <span style={{ color: "var(--gold)" }}>for Tokenized Real-World Asset Markets.</span>
+            <span className="italic" style={{ color: "var(--gold)" }}>for Tokenized Real-World Assets.</span>
           </motion.h1>
 
           <motion.p
             variants={fadeUp}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="mt-6 max-w-xl text-base leading-relaxed sm:text-lg"
+            className="mt-7 max-w-xl text-base leading-relaxed sm:text-lg font-sans-ui"
             style={{ color: "var(--text-muted)" }}
           >
-            Aspirana Tokenest routes capital, compliance, and settlement for institutional-grade RWA markets — operating today across five jurisdictions as a unified sovereign infrastructure stack.
+            Aspirana Tokenest integrates tokenization, compliance, liquidity, and cross-border financial infrastructure into a unified institutional operating system.
           </motion.p>
 
           <motion.div

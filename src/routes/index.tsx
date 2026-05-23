@@ -2,12 +2,15 @@ import { createFileRoute } from "@tanstack/react-router";
 import Navbar from "@/components/sections/Navbar";
 import CapitalTicker from "@/components/sections/CapitalTicker";
 import Hero from "@/components/sections/Hero";
+import LiveMetrics from "@/components/sections/LiveMetrics";
 import InfrastructureNodes from "@/components/sections/InfrastructureNodes";
 import LiquidityEngine from "@/components/sections/LiquidityEngine";
 import ComplianceInfrastructure from "@/components/sections/ComplianceInfrastructure";
 import AssetEcosystem from "@/components/sections/AssetEcosystem";
 import AIIntelligenceLayer from "@/components/sections/AIIntelligenceLayer";
 import StressTesting from "@/components/sections/StressTesting";
+import SovereignExpansion from "@/components/sections/SovereignExpansion";
+import CTAGateway from "@/components/sections/CTAGateway";
 import Footer from "@/components/sections/Footer";
 
 export const Route = createFileRoute("/")({
@@ -31,12 +34,15 @@ function Index() {
       <CapitalTicker />
       <div className="pt-[44px]">
         <Hero />
+        <LiveMetrics />
         <InfrastructureNodes />
-        <LiquidityEngine />
-        <ComplianceInfrastructure />
         <AssetEcosystem />
+        <ComplianceInfrastructure />
+        <LiquidityEngine />
         <AIIntelligenceLayer />
         <StressTesting />
+        <SovereignExpansion />
+        <CTAGateway />
         <Footer />
       </div>
     </main>
