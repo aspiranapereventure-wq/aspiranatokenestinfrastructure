@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
-import { Building2, Linkedin, Github, LogOut } from "lucide-react";
+import { Building2, Linkedin, Github, LogOut, UserCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { Link } from "@tanstack/react-router";
 
 const NAV = ["Infrastructure", "Assets", "Liquidity", "Compliance", "Intelligence"];
 
@@ -110,6 +111,14 @@ export default function Navbar() {
           >
             <LogOut className="h-4 w-4" />
           </button>
+          <Link
+            to="/profile"
+            title="Profile"
+            className="flex h-8 w-8 items-center justify-center rounded-md transition-colors hover:bg-white/5"
+            style={{ color: "var(--text-muted)" }}
+          >
+            <UserCircle className="h-4 w-4" />
+          </Link>
         </div>
       </div>
     </motion.nav>

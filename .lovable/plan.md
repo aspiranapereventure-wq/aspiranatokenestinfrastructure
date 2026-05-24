@@ -1,120 +1,76 @@
 
-## Goal
+# Layer 1 Ecosystem Gateway Upgrade
 
-Naiktaraf website Aspirana Tokenest dari "good institutional prototype" kepada "9/10 institutional simulation experience" — sambil port struktur dari folder Vite yang di-upload ke dalam project TanStack Start yang sedang live.
+Keep all existing Supabase auth logic (signUp / signInWithPassword / onAuthStateChange / redirect to `/`), profiles table, and `handle_new_user` trigger intact. This is a visual + feature expansion only.
 
-## Phase 0 — Port asas (uploaded → current project)
+---
 
-Project semasa adalah TanStack Start (bukan Vite + React Router macam zip). Untuk avoid dual-stack, kita port content/sections/styles ke dalam routes TanStack:
+## 1. Split-Screen Auth Portal (`src/routes/auth.tsx`)
 
-- `src/routes/index.tsx` jadi homepage (replace placeholder) yang compose semua section.
-- Salin tokens & utilities institutional (`--gold`, `--bg`, glow-gold, pulse-dot, dll.) ke `src/styles.css` sebagai design tokens proper (oklch + raw hex untuk gold #D4AF37 / bg #07111F).
-- Salin sections ke `src/components/sections/` (Navbar, Hero, Footer, InfrastructureNodes, AssetEcosystem) dan kemudian upgrade ikut V2 di bawah.
-- Install dependencies: `framer-motion`, `react-countup`, `three`, `@react-three/fiber`, `@react-three/drei`, `lucide-react`.
-- Tambah head metadata institutional (title, description, og:*) di `__root.tsx` dan leaf route.
+Rewrite the layout, preserve all handlers/state.
 
-## Phase 1 — Cinematic Hero (right-side infra visual)
-
-- Add `<HeroOrbital />` — React Three Fiber scene di right column hero:
-  - Central sovereign node (gold glow).
-  - 3 rotating orbital rings dengan satellite nodes (Malaysia / Dubai / Switzerland / HK / London).
-  - Particle infra grid background (instanced points, low cost).
-  - Liquidity streams: animated bezier lines flowing between nodes (shader emissive gold).
-  - DPR clamp + `frameloop="demand"` fallback + reduced-motion guard untuk perf.
-- Hero layout dari center-stacked → split: kiri = headline + CTA + metrics, kanan = canvas.
-- Tetap kekal: headline copy, gold accent, CountUp metrics.
-
-## Phase 2 — Command-Center Navbar
-
-Restructure jadi 3-column command bar:
-
-- LEFT: Logo + "INFRA STATUS" micro chip (green pulse dot).
-- CENTER: nav items (Infrastructure / Assets / Governance / Compliance / Intelligence).
-- RIGHT: social icons (LinkedIn, X, GitHub) + `SYSTEM STATUS: OPERATIONAL` dengan green pulse.
-- Sticky, glass blur, gold underline on hover, active route indicator.
-- Remove standalone floating `SystemStatusBar` (merged into navbar to avoid noise).
-
-## Phase 3 — Live Capital-Flow Ticker
-
-Add `<CapitalTicker />` directly under navbar, above hero:
-
-- Horizontal marquee: `RM 184M ROUTED TODAY • 12 SETTLEMENTS / MIN • MYR↔USD 4.71 • COMPLIANCE CHECKS: 2,847 • ...`
-- Continuous CSS keyframe scroll (pure CSS, no JS cost).
-- Gold dot separators, monospace numerals, top + bottom hairline border.
-
-## Phase 4 — Section Depth (new sections)
-
-Tambah 4 section baru, setiap satu ada signature animation:
-
-1. `LiquidityEngine` — animated order-routing visual (SVG lines bercabang dari source ke 5 jurisdictions, packets bergerak ikut path, throughput counter).
-2. `ComplianceInfrastructure` — compliance node graph (KYC / AML / MiCA / VARA / ERC-3643 nodes pulse + connection lines).
-3. `AIIntelligenceLayer` — AI analysis panel mock: streaming text, risk heatmap, signal cards.
-4. `StressTesting` — Monte Carlo visual: 1000 simulated price paths (canvas), confidence band fan chart.
-
-Section order final:
-
-```
-Navbar
-CapitalTicker
-Hero (with HeroOrbital)
-InfrastructureNodes
-LiquidityEngine
-ComplianceInfrastructure
-AssetEcosystem
-AIIntelligenceLayer
-StressTesting
-Footer (V2)
+```text
+┌──────────────────────┬──────────────────────┐
+│  LEFT (auth panel)   │  RIGHT (ecosystem)   │
+│  logo + headline     │  Global Network      │
+│  signup/login form   │  social cards grid   │
+│  compliance footer   │  cross-border strip  │
+└──────────────────────┴──────────────────────┘
 ```
 
-## Phase 5 — Infrastructure-Terminal Footer V2
+- Mobile (<lg): right panel collapses below; on very small screens it becomes a compact horizontal scroll strip.
+- Left: existing form (Full Name, Email, Country, Role, Password, Sign Up / Login toggle) + new "Forgot password?" link.
+- Add animated particle background (lightweight canvas, 40–60 nodes with connection lines) behind whole page.
+- Gold radial sweep + animated grid retained.
 
-Rebuild footer:
+## 2. Ecosystem Communication Panel (new component `src/components/auth/EcosystemPanel.tsx`)
 
-- TOP STRIP: `LIVE NODES` row — Malaysia • Dubai • Switzerland • Hong Kong • London, each dengan green pulse dot + latency.
-- COMPLIANCE STATUS row: MiCA Ready / VARA Pathway / ERC-3643 / ISO 27001 sebagai badge dengan check icon.
-- LINK GRID: Platform / Governance / Institutional (kekal).
-- SOCIAL GRID: LinkedIn / X / GitHub / Telegram (placeholder URLs — user boleh tukar).
-- BOTTOM TERMINAL: monospace `> system.status = OPERATIONAL  uptime: 99.998%  build: v2.0.1` + copyright.
+- Headline "Global Ecosystem Network" + subtext.
+- 14 social cards (YouTube, Discord, X, Reddit, Linktree, GitHub, TikTok, Instagram, Calendly, Facebook, Telegram, LinkedIn, Medium, WhatsApp Channel) in a responsive 3-col grid.
+- Per-card: institutional icon (lucide where available, inline SVG for X/TikTok/Discord/Reddit/Telegram/WhatsApp/Medium/Linktree), platform name, handle, "LIVE" pulse dot, animated gold gradient border on hover, glow blur, ecosystem pulse ring.
+- SVG layer with animated connection lines + floating particle nodes between cards (framer-motion).
+- Bottom strip: "Cross-Border Institutional Communication Infrastructure" + Malaysia • Dubai • Switzerland • Hong Kong • London with status dots.
 
-## Phase 6 — Investor Psychology Polish
+## 3. Forgot Password Flow
 
-Sweep across semua section untuk shift dari "explain product" → "inevitability":
+- Add "Forgot password?" link on auth form → opens inline reset mode that calls:
+  `supabase.auth.resetPasswordForEmail(email, { redirectTo: ${origin}/reset-password })`
+- New route `src/routes/reset-password.tsx` (public): detects `type=recovery` hash, form to set new password via `supabase.auth.updateUser({ password })`, then redirect to `/`.
 
-- Headline micro-copy: tukar verbs kepada present-tense infrastructure language ("Routing", "Settling", "Operating").
-- Tambah animated counters yang naik perlahan (compliance checks/sec, settlements/min) — bukan static numbers.
-- Tambah subtle scanning-line overlay (1px gold, 8s linear) on hero canvas — memberi rasa system aktif.
-- Reduced-motion respected via `prefers-reduced-motion` guard di setiap animasi heavy.
+## 4. Email Verification
 
-## Technical Section
+- Turn OFF `auto_confirm_email` (currently true) via `configure_auth` so Supabase sends verification mail.
+- After signup, show "Check your email to verify" state instead of waiting for session.
+- Existing `emailRedirectTo: window.location.origin` already wired.
 
-- **Framework**: TanStack Start v1 (current). Routes in `src/routes/`. Bukan re-introduce React Router DOM.
-- **Tokens**: tambah dalam `src/styles.css`:
-  - `--bg: #07111F`, `--bg-deep: #060E1A`, `--surface: rgba(19,34,56,0.6)`
-  - `--gold: #D4AF37`, `--gold-soft: rgba(212,175,55,0.15)`, `--gold-line: rgba(212,175,55,0.1)`
-  - `--text: #E8EEF7`, `--text-muted: #94A3B8`
-  - `--status-green: #22c55e`, `--status-blue: #3b82f6`
-  - Glow utilities: `.glow-gold`, `.glow-gold-strong`, keyframes `pulse-glow`, `pulse-dot`, `ticker-scroll`, `scan-line`.
-- **R3F perf**: `<Canvas dpr={[1, 1.5]} gl={{ antialias: true, powerPreference: 'high-performance' }}>`, instanced meshes for particles, lazy-load via dynamic import + client-only guard (no SSR for canvas).
-- **Bundles**: three + fiber + drei kira ~250KB gzip — acceptable untuk landing institutional. Code-split orbital scene supaya hero text paint dulu.
-- **SEO/Head**: title `Aspirana Tokenest — Sovereign Infrastructure for Tokenized RWA Markets`, description institutional, og:title/description, single H1 in hero.
-- **Files to add** (high level):
-  - `src/components/sections/Navbar.tsx`
-  - `src/components/sections/CapitalTicker.tsx`
-  - `src/components/sections/Hero.tsx`
-  - `src/components/three/HeroOrbital.tsx` (client-only)
-  - `src/components/sections/InfrastructureNodes.tsx`
-  - `src/components/sections/LiquidityEngine.tsx`
-  - `src/components/sections/ComplianceInfrastructure.tsx`
-  - `src/components/sections/AssetEcosystem.tsx`
-  - `src/components/sections/AIIntelligenceLayer.tsx`
-  - `src/components/sections/StressTesting.tsx`
-  - `src/components/sections/Footer.tsx`
-- **Files to edit**: `src/routes/__root.tsx` (head meta), `src/routes/index.tsx` (compose sections), `src/styles.css` (tokens + animations).
-- **No backend changes** — semua presentation layer.
+## 5. Role-Based Access
 
-## Out of scope (boleh follow-up)
+DB migration:
+- Create `app_role` enum: `admin`, `institution`, `investor`.
+- Create `user_roles` table (`user_id`, `role`, unique pair) with RLS.
+- Create `has_role(_user_id, _role)` SECURITY DEFINER function.
+- Update `handle_new_user` to also insert default `'investor'` role into `user_roles`.
+- Keep `profiles.role` (free-text role label from form) for display; enum role governs access.
 
-- Real live data feed (ticker pakai static rotation buat sekarang).
-- Actual auth gateway behind "Access Institutional Gateway" CTA.
-- Replace placeholder social URLs dengan official handles — kasi nanti.
-- Three.js scene dengan real geo-accurate globe (current = stylized orbital — lebih cinematic).
+Frontend:
+- New hook `src/hooks/useUserRole.ts` → fetches role from `user_roles`.
+- Wrap `/` index to check role; show admin-only sections conditionally.
+
+## 6. Profile Edit Page (`src/routes/profile.tsx`)
+
+- Protected route (redirect to `/auth` if no session).
+- Loads from `profiles` table for current user.
+- Editable: full_name, country, role (display label), with disabled email.
+- Save via `supabase.from('profiles').update().eq('id', user.id)`.
+- Institutional card UI consistent with Layer 1; "Back to Infrastructure" link.
+- Add profile link in Navbar next to logout button.
+
+---
+
+## Technical notes
+
+- Files created: `src/components/auth/EcosystemPanel.tsx`, `src/components/auth/ParticleField.tsx`, `src/routes/reset-password.tsx`, `src/routes/profile.tsx`, `src/hooks/useUserRole.ts`.
+- Files edited: `src/routes/auth.tsx`, `src/components/sections/Navbar.tsx`, `src/styles.css` (add ecosystem-pulse, gold-border-sweep keyframes).
+- Migrations: `app_role` enum, `user_roles` table + RLS + `has_role`, update `handle_new_user`.
+- Auth config: `auto_confirm_email: false`, keep HIBP on.
+- No changes to existing signup/login submit logic, redirect to `/`, or profiles columns.
